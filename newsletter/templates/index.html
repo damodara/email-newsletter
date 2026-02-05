@@ -1,8 +1,7 @@
+{% load static %}
 <!DOCTYPE html>
-
 <html lang="en" data-bs-theme="auto">
 <head>
-    {% load static %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -13,98 +12,188 @@
     <meta name="theme-color" content="#712cf9">
     <link href="{% static 'css/checkout.css' %}" rel="stylesheet">
     <style>
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select:none
-    }
-
-    @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-            font-size:3.5rem
+        html, body {
+            height: 100%;
         }
-    }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            margin-top: auto;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e5e5e5;
+        }
 
-    .b-example-divider {
-        width: 100%;
-        height: 3rem;
-        background-color: #0000001a;
-        border: solid rgba(0, 0, 0, .15);
-        border-width: 1px 0;
-        box-shadow:inset 0 .5em 1.5em #0000001a, inset 0 .125em .5em #00000026
-    }
+        /* Эффекты при наведении на пункты меню */
+        .nav-link {
+            transition: all 0.3s ease;
+            color: #6c757d !important;
+            position: relative;
+        }
 
-    .b-example-vr {
-        flex-shrink: 0;
-        width: 1.5rem;
-        height:100vh
-    }
+        .nav-link:hover {
+            color: #712cf9 !important; /* Сиреневый цвет */
+            transform: translateY(-2px);
+        }
 
-    .bi {
-        vertical-align: -.125em;
-        fill:currentColor
-    }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background-color: #712cf9; /* Сиреневый цвет */
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
 
-    .nav-scroller {
-        position: relative;
-        z-index: 2;
-        height: 2.75rem;
-        overflow-y:hidden
-    }
+        .nav-link:hover::after {
+            width: 70%;
+        }
 
-    .nav-scroller .nav {
-        display: flex;
-        flex-wrap: nowrap;
-        padding-bottom: 1rem;
-        margin-top: -1px;
-        overflow-x: auto;
-        text-align: center;
-        white-space: nowrap;
-        -webkit-overflow-scrolling:touch
-    }
+        /* Анимация кнопок */
+        .btn-bd-primary {
+            --bd-violet-bg: #712cf9; /* Сиреневый цвет */
+            --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+            --bs-btn-font-weight: 600;
+            --bs-btn-color: var(--bs-white);
+            --bs-btn-bg: var(--bd-violet-bg);
+            --bs-btn-border-color: var(--bd-violet-bg);
+            --bs-btn-hover-color: var(--bs-white);
+            --bs-btn-hover-bg: #6528e0;
+            --bs-btn-hover-border-color: #6528e0;
+            --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+            --bs-btn-active-color: var(--bs-btn-hover-color);
+            --bs-btn-active-bg: #5a23c8;
+            --bs-btn-active-border-color: #5a23c8
+        }
 
-    .btn-bd-primary {
-        --bd-violet-bg: #712cf9;
-        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-        --bs-btn-font-weight: 600;
-        --bs-btn-color: var(--bs-white);
-        --bs-btn-bg: var(--bd-violet-bg);
-        --bs-btn-border-color: var(--bd-violet-bg);
-        --bs-btn-hover-color: var(--bs-white);
-        --bs-btn-hover-bg: #6528e0;
-        --bs-btn-hover-border-color: #6528e0;
-        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #5a23c8;
-        --bs-btn-active-border-color: #5a23c8
-    }
+        .btn-outline-primary {
+            --bs-btn-color: #712cf9;
+            --bs-btn-border-color: #712cf9;
+            --bs-btn-hover-color: var(--bs-white);
+            --bs-btn-hover-bg: #712cf9;
+            --bs-btn-hover-border-color: #712cf9;
+            --bs-btn-focus-shadow-rgb: 113,44,249;
+            --bs-btn-active-color: var(--bs-white);
+            --bs-btn-active-bg: #712cf9;
+            --bs-btn-active-border-color: #712cf9;
+            transition: all 0.3s ease;
+        }
 
-    .bd-mode-toggle {
-        z-index:1500
-    }
+        .btn-bd-primary:hover,
+        .btn-outline-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
 
-    .bd-mode-toggle .bi {
-        width: 1em;
-        height:1em
-    }
+        /* Остальные стили остаются без изменений */
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none
+        }
 
-    .bd-mode-toggle .dropdown-menu .active .bi {
-        display: block !important
-    }
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem
+            }
+        }
+
+        .b-example-divider {
+            width: 100%;
+            height: 3rem;
+            background-color: #0000001a;
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em #0000001a, inset 0 .125em .5em #00000026
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch
+        }
+
+        .bd-mode-toggle {
+            z-index: 1500
+        }
+
+        .bd-mode-toggle .bi {
+            width: 1em;
+            height: 1em
+        }
+
+        .bd-mode-toggle .dropdown-menu .active .bi {
+            display: block !important
+        }
     </style>
 </head>
 <body class="bg-body-tertiary">
-    <div class="container">
-        <main>
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <div class="col-md-3 mb-2 mb-md-0">
+            <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+                <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+                    <use xlink:href="#bootstrap"/>
+                </svg>
+            </a>
+        </div>
+
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="#" class="nav-link px-2">Главная</a></li>
+            <li><a href="#" class="nav-link px-2">Получатели</a></li>
+            <li><a href="#" class="nav-link px-2">Сообщения</a></li>
+            <li><a href="#" class="nav-link px-2">Рассылки</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-outline-primary me-2">Вход</button>
+            <button type="button" class="btn btn-bd-primary">Регистрация</button>
+        </div>
+    </header>
+
+    <main class="flex-grow-1">
+        <div class="container py-5">
             <div class="py-5 text-center">
-                <h1 class="h2">Форма email-рассылки</h1>
-                <p class="lead">Ниже можно заполнить форму для создания email-рассылки</p>
+                <h1 class="h2">Форма для регистрации</h1>
+                <p class="lead">Ниже можно заполнить форму для регистрации получателей рассылки</p>
             </div>
 
             <div class="row g-5">
-                <!--Боковое меню-->
+                <!-- Боковое меню -->
                 <div class="col-md-5 col-lg-4 order-md-last">
                     <h4 class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-primary">Ваши рассылки</span>
@@ -140,14 +229,14 @@
                                 <label for="firstName" class="form-label">Имя</label>
                                 <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
                                 <div class="invalid-feedback">
-                                Введите имя
+                                    Введите имя
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <label for="lastName" class="form-label">Фамилия</label>
                                 <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
                                 <div class="invalid-feedback">
-                                Введите фамилию
+                                    Введите фамилию
                                 </div>
                             </div>
                             <div class="col-12">
@@ -157,21 +246,7 @@
                                 </label>
                                 <input type="email" class="form-control" id="email" placeholder="you@example.com">
                                 <div class="invalid-feedback">
-                                Пожалуйста введите корректный email адрес
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <label for="subject" class="form-label">Ваше письмо</label>
-                                <input type="text" class="form-control" id="subject" placeholder="Тема письма" required>
-                                <div class="invalid-feedback">
-                                Введите тему сообщения
-                                </div>
-                            </div>
-                            <div class="col-12 form-floating">
-                                <label for="text" class="form-label">Текст сообщения</label>
-                                <textarea class="form-control" id="text" name="body" placeholder="Текст письма" style="height: 100px;"></textarea>
-                                <div class="invalid-feedback">
-                                Введите текст сообщения
+                                    Пожалуйста введите корректный email адрес
                                 </div>
                             </div>
                         </div>
@@ -180,11 +255,15 @@
                     </form>
                 </div>
             </div>
-        </main>
-        <footer class="my-5 pt-5 text-body-secondary text-center text-small">
+        </div>
+    </main>
+
+    <footer class="text-body-secondary text-center text-small">
+        <div class="container">
             <p class="mb-1">&copy; 2026</p>
-        </footer>
-    </div>
+        </div>
+    </footer>
+
     <script src="{% static 'js/bootstrap.bundle.min.js' %}" class="astro-vvvwv3sm"></script>
     <script src="{% static 'js/checkout.js' %}" class="astro-vvvwv3sm"></script>
 </body>
