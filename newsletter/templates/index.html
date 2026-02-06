@@ -197,27 +197,22 @@
                 <div class="col-md-5 col-lg-4 order-md-last">
                     <h4 class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-primary">Ваши рассылки</span>
-                        <span class="badge bg-primary rounded-pill">3</span>
+                        <span class="badge bg-primary rounded-pill">{{ letters.count }}</span>
                     </h4>
                     <ul class="list-group mb-3">
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Product name</h6>
-                                <small class="text-body-secondary">Brief description</small>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Second product</h6>
-                                <small class="text-body-secondary">Brief description</small>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Third item</h6>
-                                <small class="text-body-secondary">Brief description</small>
-                            </div>
-                        </li>
+                        {% if letters %}
+        {% for letter in letters|slice:":3" %}
+            <li class="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                    <h6 class="my-0">{{ letter.subject|truncatechars:25 }}</h6>
+                    <small class="text-body-secondary">{{ letter.text|truncatechars:50 }}</small>
+                </div>
+                <span class="text-muted">{{ letter.created_at|date:"d.m.Y" }}</span>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li class="list-group-item">Нет активных рассылок</li>
+    {% endif %}
                     </ul>
                 </div>
                 <div class="col-md-7 col-lg-8">
