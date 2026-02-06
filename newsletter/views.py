@@ -1,15 +1,32 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  UpdateView)
+                                  UpdateView, TemplateView)
 
+from newsletter.forms import SubscriberForm
 from newsletter.models import Mailing, Message, Subscriber
 
 
-def index(request):
-    letters = Message.objects.all()
-    context = {"letters": letters}
-    return render(request, "index.html", context)
+class IndexView(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['mailings'] = Mailing.objects.all().order_by('-start_time')
+        context['form'] = SubscriberForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = SubscriberForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # После сохранения — перезагрузим страницу с сообщением (можно добавить success_url)
+            return self.get(request, *args, **kwargs)
+        else:
+            # Если ошибка — вернём форму с ошибками
+            context = self.get_context_data()
+            context['form'] = form
+            return self.render_to_response(context)
 
 
 class SubscriberListView(ListView):

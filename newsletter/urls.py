@@ -7,12 +7,12 @@ from newsletter.views import (MailingCreateView, MailingDeleteView,
                               MessageDeleteView, MessageListView,
                               MessageUpdateView, SubscriberCreateView,
                               SubscriberDeleteView, SubscriberListView,
-                              SubscriberUpdateView, index)
+                              SubscriberUpdateView, IndexView)
 
 app_name = NewsletterConfig.name
 
 urlpatterns = [
-    path("", index, name="index"),
+    path("", IndexView.as_view(), name="index"),
     # Список получателей
     path("subscribers/", SubscriberListView.as_view(), name="subscriber_list"),
     path(

@@ -1,66 +1,70 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="py-5 text-center">
-	<h1 class="h2">Форма для регистрации</h1>
-	<p class="lead">Ниже можно заполнить форму для регистрации получателей рассылки</p>
+    <h1 class="h2">Форма для регистрации</h1>
+    <p class="lead">Ниже можно заполнить форму для регистрации получателей рассылки</p>
 </div>
 
 <div class="row g-5">
-	<!-- Боковое меню -->
-	<div class="col-md-5 col-lg-4 order-md-last">
-		<h4 class="d-flex justify-content-between align-items-center mb-3">
-			<span class="text-primary">Ваши рассылки</span>
-			<span class="badge bg-primary rounded-pill">{{ messages.count }}</span>
-		</h4>
-		<ul class="list-group mb-3">
-			{% if messages %}
-			{% for message in messages|slice:":3" %}
-			<li class="list-group-item d-flex justify-content-between lh-sm">
-				<div>
-					<h6 class="my-0">{{ letter.subject|truncatechars:25 }}</h6>
-					<small class="text-body-secondary">{{ letter.text|truncatechars:50 }}</small>
-				</div>
-				<span class="text-muted">{{ letter.created_at|date:"d.m.Y" }}</span>
-			</li>
-			{% endfor %}
-			{% else %}
-			<li class="list-group-item">Нет активных рассылок</li>
-			{% endif %}
-		</ul>
-	</div>
-	<div class="col-md-7 col-lg-8">
-		<h4 class="mb-3">Форма получателя рассылки</h4>
-		<form class="needs-validation" novalidate>
-			<hr class="my-4">
-			<div class="row g-3">
-				<div class="col-sm-6">
-					<label for="firstName" class="form-label">Имя</label>
-					<input type="text" class="form-control" id="firstName" placeholder="" value="" required>
-					<div class="invalid-feedback">
-						Введите имя
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<label for="lastName" class="form-label">Фамилия</label>
-					<input type="text" class="form-control" id="lastName" placeholder="" value="" required>
-					<div class="invalid-feedback">
-						Введите фамилию
-					</div>
-				</div>
-				<div class="col-12">
-					<label for="email" class="form-label">
-						Email
-						<span class="text-body-secondary">(Получателя)</span>
-					</label>
-					<input type="email" class="form-control" id="email" placeholder="you@example.com">
-					<div class="invalid-feedback">
-						Пожалуйста введите корректный email адрес
-					</div>
-				</div>
-			</div>
-			<hr class="my-4">
-			<button class="w-100 btn btn-bd-primary btn-lg" type="submit">Сохранить</button>
-		</form>
-	</div>
+    <!-- Боковое меню -->
+    <div class="col-md-5 col-lg-4 order-md-last">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Ваши рассылки</span>
+            <span class="badge bg-primary rounded-pill">{{ mailings.count }}</span>
+        </h4>
+        <ul class="list-group mb-3">
+            {% if mailings %}
+                {% for mailing in mailings|slice:":3" %}
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">{{ mailing.message.subject|truncatechars:25 }}</h6>
+                        <small class="text-body-secondary">{{ mailing.message.text|truncatechars:50 }}</small>
+                    </div>
+                    <span class="text-muted">{{ mailing.start_time|date:"d.m.Y" }}</span>
+                </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">Нет активных рассылок</li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="col-md-7 col-lg-8">
+        <h4 class="mb-3">Форма получателя рассылки</h4>
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <hr class="my-4">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">Имя</label>
+                    {{ form.first_name }}
+                    <div class="invalid-feedback">
+                        Введите имя
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Фамилия</label>
+                    {{ form.last_name }}
+                    <div class="invalid-feedback">
+                        Введите фамилию
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                        Email
+                        <span class="text-body-secondary">(Получателя)</span>
+                    </label>
+                    {{ form.email }}
+                    <div class="invalid-feedback">
+                        Пожалуйста введите корректный email адрес
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <button class="w-100 btn btn-bd-primary btn-lg" type="submit">Сохранить</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
