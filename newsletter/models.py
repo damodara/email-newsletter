@@ -1,14 +1,18 @@
-from django.utils import timezone
 from django.db import models
+from django.utils import timezone
 
 
 class Subscriber(models.Model):
     first_name = models.CharField(max_length=100, verbose_name="Имя")
     last_name = models.CharField(max_length=100, verbose_name="Фамилия")
-    surname = models.CharField(max_length=100, verbose_name="Отчество", blank=True, null=True)
+    surname = models.CharField(
+        max_length=100, verbose_name="Отчество", blank=True, null=True
+    )
     email = models.EmailField(unique=True, verbose_name="E-mail")
     comment = models.TextField(verbose_name="Комментарий", blank=True, null=True)
-    created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
+    created_at = models.DateTimeField(
+        default=timezone.now, verbose_name="Дата создания"
+    )
 
     class Meta:
         verbose_name = "Подписчик"
@@ -29,9 +33,11 @@ class Message(models.Model):
         verbose_name="Получатель",
         null=True,
         blank=True,
-        related_name="messages"
+        related_name="messages",
     )
-    created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
+    created_at = models.DateTimeField(
+        default=timezone.now, verbose_name="Дата создания"
+    )
 
     class Meta:
         verbose_name = "Письмо"
