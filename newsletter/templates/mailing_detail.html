@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="py-5 text-center">
+    <h1 class="h2">Детали рассылки #{{ object.id }}</h1>
+    <p class="lead">Полная информация о запланированной рассылке</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <strong>Статус:</strong>
+                <span class="badge
+                    {% if object.status == 'created' %}bg-secondary
+                    {% elif object.status == 'running' %}bg-success
+                    {% else %}bg-danger{% endif %}">
+                    {{ object.get_status_display }}
+                </span>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Дата начала:</strong> {{ object.start_time|date:"d.m.Y H:i" }}</li>
+                <li class="list-group-item"><strong>Дата окончания:</strong> {{ object.end_time|date:"d.m.Y H:i" }}</li>
+                <li class="list-group-item"><strong>Сообщение:</strong> {{ object.message.subject }}</li>
+                <li class="list-group-item"><strong>Текст письма:</strong><br>{{ object.message.text }}</li>
+                <li class="list-group-item">
+                    <strong>Получатели ({{ object.recipients.count }}):</strong>
+                    <ul class="mt-2">
+                        {% for recipient in object.recipients.all %}
+                        <li>{{ recipient.first_name }} {{ recipient.last_name }} — {{ recipient.email }}</li>
+                        {% empty %}
+                        <li><em>Нет получателей</em></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'newsletter:mailing_update' object.pk %}" class="btn btn-bd-primary">Изменить</a>
+            <a href="{% url 'newsletter:mailing_delete' object.pk %}" class="btn btn-outline-danger">Удалить</a>
+            <a href="{% url 'newsletter:mailing_list' %}" class="btn btn-outline-secondary">Назад к списку</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

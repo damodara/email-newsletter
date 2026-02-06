@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
 
-from newsletter.models import Message, Subscriber
+from newsletter.models import Mailing, Message, Subscriber
 
 
 def index(request):
@@ -61,3 +62,39 @@ class MessageDeleteView(DeleteView):
     model = Message
     template_name = "message_confirm_delete.html"
     success_url = reverse_lazy("newsletter:message_list")
+
+
+class MailingListView(ListView):
+    model = Mailing
+    template_name = "mailing_list.html"
+    context_object_name = "object_list"
+
+
+class MailingDetailView(DetailView):
+    model = Mailing
+    template_name = "mailing_detail.html"
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        obj.update_status()
+        return obj
+
+
+class MailingCreateView(CreateView):
+    model = Mailing
+    fields = ["start_time", "end_time", "message", "recipients"]
+    template_name = "mailing_form.html"
+    success_url = reverse_lazy("newsletter:mailing_list")
+
+
+class MailingUpdateView(UpdateView):
+    model = Mailing
+    fields = ["start_time", "end_time", "message", "recipients"]
+    template_name = "mailing_form.html"
+    success_url = reverse_lazy("newsletter:mailing_list")
+
+
+class MailingDeleteView(DeleteView):
+    model = Mailing
+    template_name = "mailing_confirm_delete.html"
+    success_url = reverse_lazy("newsletter:mailing_list")

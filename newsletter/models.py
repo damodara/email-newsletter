@@ -1,5 +1,19 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+
+
+class Message(models.Model):
+    subject = models.CharField(max_length=255, verbose_name="Тема письма")
+    text = models.TextField(verbose_name="Текст письма")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Сообщение"
+        verbose_name_plural = "Сообщения"
+
+    def __str__(self):
+        return self.subject
 
 
 class Subscriber(models.Model):
@@ -24,26 +38,52 @@ class Subscriber(models.Model):
         return self.email
 
 
-class Message(models.Model):
-    subject = models.CharField(max_length=150, verbose_name="Тема письма")
-    text = models.TextField(verbose_name="Текст письма")
-    subscriber = models.ForeignKey(
-        Subscriber,
-        on_delete=models.SET_NULL,
-        verbose_name="Получатель",
-        null=True,
-        blank=True,
-        related_name="messages",
+class Mailing(models.Model):
+    STATUS_CHOICES = [
+        ("created", "Создана"),
+        ("running", "Запущена"),
+        ("completed", "Завершена"),
+    ]
+
+    start_time = models.DateTimeField(verbose_name="Дата и время начала отправки")
+    end_time = models.DateTimeField(verbose_name="Дата и время окончания отправки")
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="created", verbose_name="Статус"
     )
-    created_at = models.DateTimeField(
-        default=timezone.now, verbose_name="Дата создания"
+    message = models.ForeignKey(
+        Message, on_delete=models.CASCADE, verbose_name="Сообщение"
     )
+    recipients = models.ManyToManyField(Subscriber, verbose_name="Получатели")
 
     class Meta:
-        verbose_name = "Письмо"
-        verbose_name_plural = "Письма"
-        db_table = "message"
-        ordering = ["-created_at", "subject"]
+        verbose_name = "Рассылка"
+        verbose_name_plural = "Рассылки"
+
+    def clean(self):
+        if self.start_time and self.end_time:
+            if self.start_time < timezone.now():
+                raise ValidationError("Дата начала не может быть в прошлом.")
+            if self.start_time >= self.end_time:
+                raise ValidationError("Дата начала должна быть раньше даты окончания.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def update_status(self):
+        now = timezone.now()
+        new_status = self.status
+
+        if now < self.start_time:
+            new_status = "created"
+        elif self.start_time <= now <= self.end_time:
+            new_status = "running"
+        else:
+            new_status = "completed"
+
+        if new_status != self.status:
+            self.status = new_status
+            self.save(update_fields=["status"])
 
     def __str__(self):
-        return self.subject
+        return f"Рассылка {self.id} — {self.get_status_display()}"
