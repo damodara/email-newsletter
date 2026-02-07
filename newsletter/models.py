@@ -67,8 +67,11 @@ class Mailing(models.Model):
                 raise ValidationError("Дата начала должна быть раньше даты окончания.")
 
     def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+        if 'update_fields' in kwargs and kwargs['update_fields'] == ['status']:
+            super().save(*args, **kwargs)
+        else:
+            self.full_clean()
+            super().save(*args, **kwargs)
 
     def update_status(self):
         now = timezone.now()

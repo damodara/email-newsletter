@@ -32,3 +32,5 @@ class MailingAdmin(admin.ModelAdmin):
         return obj.recipients.count()
 
     recipients_count.short_description = "Количество получателей"
+
+
