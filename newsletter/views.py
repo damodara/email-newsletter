@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.utils import timezone
 from django.urls import reverse_lazy
+from .models import Mailing, Subscriber
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView, TemplateView)
 
@@ -115,3 +117,25 @@ class MailingDeleteView(DeleteView):
     model = Mailing
     template_name = "mailing_confirm_delete.html"
     success_url = reverse_lazy("newsletter:mailing_list")
+
+
+def dashboard(request):
+    now = timezone.now()
+
+    total_mailings = Mailing.objects.count()
+
+    active_mailings = Mailing.objects.filter(
+        start_time__lte=now,
+        end_time__gte=now,
+        status="running"
+    ).count()
+
+    total_subscribers = Subscriber.objects.count()
+
+    context = {
+        "total_mailings": total_mailings,
+        "active_mailings": active_mailings,
+        "total_subscribers": total_subscribers,
+    }
+
+    return render(request, "dashboard.html", context)

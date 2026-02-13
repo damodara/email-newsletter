@@ -1,5 +1,6 @@
 from django.urls import path
 
+from newsletter import views
 from newsletter.apps import NewsletterConfig
 from newsletter.views import (MailingCreateView, MailingDeleteView,
                               MailingDetailView, MailingListView,
@@ -12,7 +13,8 @@ from newsletter.views import (MailingCreateView, MailingDeleteView,
 app_name = NewsletterConfig.name
 
 urlpatterns = [
-    path("", IndexView.as_view(), name="index"),
+    # path("", IndexView.as_view(), name="index"),
+    path("", views.dashboard, name="dashboard"),
     # Список получателей
     path("subscribers/", SubscriberListView.as_view(), name="subscriber_list"),
     path(
