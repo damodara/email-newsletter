@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="py-5 text-center">
+    <h1 class="h2">{{ view.action_title|default:"Создать рассылку" }}</h1>
+    <p class="lead">Заполните форму для настройки новой рассылки</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-3">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+            <div class="row g-4">
+                <!-- Дата начала -->
+                <div class="col-12">
+                    <label for="{{ form.start_time.id_for_label }}" class="form-label">Дата и время начала *</label>
+                    {{ form.start_time }}
+                    {% if form.start_time.errors %}<div class="text-danger small">{{ form.start_time.errors }}</div>{% endif %}
+                    <div class="form-text text-muted">Формат: ГГГГ-ММ-ДД ЧЧ:ММ (например: 2026-02-07 15:30)</div>
+                </div>
+
+                <!-- Дата окончания -->
+                <div class="col-12">
+                    <label for="{{ form.end_time.id_for_label }}" class="form-label">Дата и время окончания *</label>
+                    {{ form.end_time }}
+                    {% if form.end_time.errors %}<div class="text-danger small">{{ form.end_time.errors }}</div>{% endif %}
+                    <div class="form-text text-muted">Формат: ГГГГ-ММ-ДД ЧЧ:ММ (например: 2026-02-07 17:00)</div>
+                </div>
+
+                <!-- Сообщение -->
+                <div class="col-12">
+                    <label for="{{ form.message.id_for_label }}" class="form-label">Сообщение *</label>
+                    {{ form.message }}
+                    {% if form.message.errors %}<div class="text-danger small">{{ form.message.errors }}</div>{% endif %}
+                </div>
+
+                <!-- Получатели -->
+                <div class="col-12">
+                    <label for="{{ form.recipients.id_for_label }}" class="form-label">Получатели *</label>
+                    {{ form.recipients }}
+                    {% if form.recipients.errors %}<div class="text-danger small">{{ form.recipients.errors }}</div>{% endif %}
+                    <div class="form-text text-muted">Выберите одного или несколько получателей.</div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{% url 'newsletter:mailing_list' %}" class="btn btn-outline-secondary btn-lg px-4">Отмена</a>
+                <button class="btn btn-bd-primary btn-lg px-4" type="submit">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Скрипт для валидации -->
+<script>
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}
