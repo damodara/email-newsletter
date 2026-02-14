@@ -1,3 +1,5 @@
-from django.test import TestCase
+"""
+Тесты приложения users (пока заглушка; можно добавить тесты регистрации, входа, блокировки).
+"""
 
 # Create your tests here.

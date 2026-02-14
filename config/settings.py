@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "users",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -66,6 +67,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "newsletter.context_processors.newsletter_context",
             ],
         },
     },
@@ -88,7 +90,7 @@ DATABASES = {
     }
 }
 
-
+AUTH_USER_MODEL = "users.User"
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -129,17 +131,33 @@ STATICFILES_DIRS = (BASE_DIR / "static",)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# Почта: если в .env не заданы — в DEBUG письма выводятся в консоль (терминал)
+_email_host = os.getenv("EMAIL_HOST")
+if DEBUG and not _email_host:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    DEFAULT_FROM_EMAIL = "noreply@example.com"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = _email_host
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() == "true"
+    DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER") or "noreply@example.com"
 
 
 # Аутентификация
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'dashboard'  # После входа — на главную панель
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = "users:login"
+LOGIN_REDIRECT_URL = "newsletter:dashboard"
+LOGOUT_REDIRECT_URL = "users:login"
 
+# Кеширование (серверное)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+        "OPTIONS": {"MAX_ENTRIES": 1000},
+    }
+}
+CACHE_MIDDLEWARE_SECONDS = 60
+CACHE_MIDDLEWARE_KEY_PREFIX = "coursework"

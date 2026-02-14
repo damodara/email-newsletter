@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4 text-primary">Статистика рассылок</h1>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-primary shadow-sm h-100">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="mb-0">Всего попыток</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-primary">{{ total_attempts }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success shadow-sm h-100">
+                <div class="card-header bg-success text-white text-center">
+                    <h5 class="mb-0">Успешно</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-success">{{ success_count }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-danger shadow-sm h-100">
+                <div class="card-header bg-danger text-white text-center">
+                    <h5 class="mb-0">Не успешно</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-danger">{{ fail_count }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
